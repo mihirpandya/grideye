@@ -21,24 +21,53 @@
         	socket.emit('startUpdate', {data: 'I\'m connected!'});
 	    });
 
+	    var updateIterations = 0;
+	    var curMin, curMax;
+	    var range, ghettoMedian;
+	    var amp;
+	    var mappedRange, amplifiedValue;
+	    var MAX_R_VALUE = 255;
+
 	    socket.on('updateArray', function(data) {
+	    	updateIterations++;
 	    	var node, c, size;
 	    	console.log(data)
 	    	console.log(data.length)
+
 	    	for (i = 0; i < data.length; i++) {
 	    		for (j = 0; j < data[i].length; j++) {
 	    			node = document.getElementById(8*i+j)
-	    			console.log(8*i + j)
+	    			// console.log(8*i + j);
 	    			c = data[i][j]
-	    			if (c > 100) {
-		    			size = c/6;
-	    			} else {
-	    				size = 100/6;
-	    			}
-	    			node.style.backgroundColor = 'rgb('+c+',0,0)'
-	    			node.style.width = (100 + size*2).toString() + "px";
-	    			node.style.height = (100 + size*2).toString() + "px";
-	    			node.style.margin = size.toString() + "px";
+
+    				if (curMin && c < curMin) {
+    					curMin = c;
+    				}
+    				if (curMax && c > curMin) {
+    					curMax = c;
+    				}
+
+    				if (updateIterations > 20) {
+	    				ghettoMedian = (curMin + curMax) / 2;
+	    				amp =  MAX_R_VALUE / (curMax - curMin);
+
+	    				amplifiedValue = ghettoMedian + (c - ghettoMedian) * amp;
+	    				var px = amplifiedValue / 12.5;
+	    				console.log(amplifiedValue);
+
+		    			node.style.backgroundColor = 'rgb('+c+',0,0)'
+		    			node.style.width = (100 + px*2).toString() + "px";
+		    			node.style.height = (100 + px*2).toString() + "px";
+		    			node.style.margin = px.toString() + "px";
+
+    				}
+
+	    			// if (c > 100) {
+		    		// 	size = c/6;
+	    			// } else {
+	    			// 	size = 100/6;
+	    			// }
+
 	    		}
 	    	}
 	    });
