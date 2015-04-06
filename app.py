@@ -11,14 +11,14 @@ socketio = SocketIO(app)
 
 ge = Grideye()
 sampleArray = [
-	[10, 20, 30, 40, 50, 60, 70, 80],
-	[10, 20, 30, 40, 50, 60, 70, 80],
-	[10, 20, 30, 40, 50, 60, 70, 80],
-	[10, 20, 30, 40, 50, 60, 70, 80],
-	[10, 20, 30, 40, 50, 60, 70, 80],
-	[10, 20, 30, 40, 50, 60, 70, 80],
-	[10, 20, 30, 40, 50, 60, 70, 80],
-	[10, 20, 30, 40, 50, 60, 70, 80],
+	list(xrange(10, 18)),
+	list(xrange(20, 28)),
+	list(xrange(30, 38)),
+	list(xrange(40, 48)),
+	list(xrange(50, 58)),
+	list(xrange(60, 68)),
+	list(xrange(70, 78)),
+	list(xrange(80, 88)),
 ]
 
 @app.route("/")
@@ -30,9 +30,14 @@ def hello():
 
 @socketio.on('startUpdate')
 def handle_my_custom_event(data):
+    i = 1
     while(1):
+        i = i+1
     	arr = ge.getNextArray()
     	emit('updateArray', arr)
+        print 'Iteration %d' % i
+        for el in arr:
+            print el
     	gevent.sleep(0.1)
 
 if __name__ == "__main__":

@@ -1,12 +1,14 @@
 import serial, time
 
+# Grideye output looks like:
+# '$GRIDEYE,0,6C,68,6A,67,71,6F,6E,6F*25\r\n'
+
 class Grideye():
 
 	SERIAL_PATH = '/dev/tty.usbserial-AE00BUKF'
 	BAUD_RATE = 115200
 	PREFIX = '$GRIDEYE'
 	ser = None
-	AMP = 1.0
 
 	def __init__(self):
 		self.ser = serial.Serial(self.SERIAL_PATH,
@@ -14,7 +16,7 @@ class Grideye():
 								timeout=3)
 
 	def getNextArray(self):
-		result = list()
+		result = [[]] * 8
 		row = self.ser.readline()
 		while(row.split(',')[0] != self.PREFIX):
 			row = self.ser.readline()
@@ -24,8 +26,8 @@ class Grideye():
 		row_l = row[0].split(',')
 		row_ints = list()
 		for i in xrange(2, 10):
-			row_ints.append(int(row_l[i], 16)*self.AMP)
-		result.append(row_ints)
+			row_ints.append(int(row_l[i], 16))
+		result[int(row_l[1])] = row_ints
 
 		for i in xrange(0, 7):
 			row = self.ser.readline()
@@ -33,8 +35,8 @@ class Grideye():
 			row_l = row[0].split(',')
 			row_ints = list()
 			for i in xrange(2, 10):
-				row_ints.append(int(row_l[i], 16)*self.AMP)
-			result.append(row_ints)
+				row_ints.append(int(row_l[i], 16))
+			result[int(row_l[1])] = row_ints
 		return result
 
 if __name__ == "__main__":

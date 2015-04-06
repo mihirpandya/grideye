@@ -4,7 +4,7 @@
 
 	<style>
 		.square {
-			background-color: black;
+			background-color: gray;
 			display: inline-block;
 			height: 100px;
 			width: 100px;
@@ -30,15 +30,19 @@
 	    			node = document.getElementById(8*i+j)
 	    			console.log(8*i + j)
 	    			c = data[i][j]
-	    			if (c > 100) {
-		    			size = c/6;
+	    			// if (c > 100) {
+		    		// 	size = c/6;
+	    			// } else {
+	    			// 	size = 100/6;
+	    			// }
+	    			if (c > 120) {
+	    				node.style.backgroundColor = 'black'
 	    			} else {
-	    				size = 100/6;
+	    				node.style.backgroundColor = 'gray'
 	    			}
-	    			node.style.backgroundColor = 'rgb('+c+',0,0)'
-	    			node.style.width = (100 + size*2).toString() + "px";
-	    			node.style.height = (100 + size*2).toString() + "px";
-	    			node.style.margin = size.toString() + "px";
+	    			// node.style.width = (100 + size*2).toString() + "px";
+	    			// node.style.height = (100 + size*2).toString() + "px";
+	    			// node.style.margin = size.toString() + "px";
 	    		}
 	    	}
 	    });
