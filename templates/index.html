@@ -1,0 +1,137 @@
+<html>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js">
+	</script>
+
+	<style>
+		.square {
+			background-color: black;
+			display: inline-block;
+			height: 100px;
+			width: 100px;
+			margin: 20px;
+			border-radius: 50%;
+		}
+	</style>
+
+	<script type="text/javascript" charset="utf-8">
+	    var socket = io.connect('http://' + document.domain + ':' + location.port);
+	    console.log('Connected to http://' + document.domain + ':' + location.port);
+
+	    socket.on('connect', function() {
+        	socket.emit('startUpdate', {data: 'I\'m connected!'});
+	    });
+
+	    socket.on('updateArray', function(data) {
+	    	var node, c, size;
+	    	console.log(data)
+	    	console.log(data.length)
+	    	for (i = 0; i < data.length; i++) {
+	    		for (j = 0; j < data[i].length; j++) {
+	    			node = document.getElementById(8*i+j)
+	    			console.log(8*i + j)
+	    			c = data[i][j]
+	    			if (c > 100) {
+		    			size = c/6;
+	    			} else {
+	    				size = 100/6;
+	    			}
+	    			node.style.backgroundColor = 'rgb('+c+',0,0)'
+	    			node.style.width = (100 + size*2).toString() + "px";
+	    			node.style.height = (100 + size*2).toString() + "px";
+	    			node.style.margin = size.toString() + "px";
+	    		}
+	    	}
+	    });
+	</script>
+
+	<body>
+		<div>
+			<div id="0" class="square"></div>
+			<div id="1" class="square"></div>
+			<div id="2" class="square"></div>
+			<div id="3" class="square"></div>
+			<div id="4" class="square"></div>
+			<div id="5" class="square"></div>
+			<div id="6" class="square"></div>
+			<div id="7" class="square"></div>
+		</div>
+
+		<div>
+			<div id="8" class="square"></div>
+			<div id="9" class="square"></div>
+			<div id="10" class="square"></div>
+			<div id="11" class="square"></div>
+			<div id="12" class="square"></div>
+			<div id="13" class="square"></div>
+			<div id="14" class="square"></div>
+			<div id="15" class="square"></div>
+		</div>
+
+		<div>
+			<div id="16" class="square"></div>
+			<div id="17" class="square"></div>
+			<div id="18" class="square"></div>
+			<div id="19" class="square"></div>
+			<div id="20" class="square"></div>
+			<div id="21" class="square"></div>
+			<div id="22" class="square"></div>
+			<div id="23" class="square"></div>
+		</div>
+
+		<div>
+			<div id="24" class="square"></div>
+			<div id="25" class="square"></div>
+			<div id="26" class="square"></div>
+			<div id="27" class="square"></div>
+			<div id="28" class="square"></div>
+			<div id="29" class="square"></div>
+			<div id="30" class="square"></div>
+			<div id="31" class="square"></div>
+		</div>
+
+		<div>
+			<div id="32" class="square"></div>
+			<div id="33" class="square"></div>
+			<div id="34" class="square"></div>
+			<div id="35" class="square"></div>
+			<div id="36" class="square"></div>
+			<div id="37" class="square"></div>
+			<div id="38" class="square"></div>
+			<div id="39" class="square"></div>
+		</div>
+
+		<div>
+			<div id="40" class="square"></div>
+			<div id="41" class="square"></div>
+			<div id="42" class="square"></div>
+			<div id="43" class="square"></div>
+			<div id="44" class="square"></div>
+			<div id="45" class="square"></div>
+			<div id="46" class="square"></div>
+			<div id="47" class="square"></div>
+		</div>
+
+		<div>
+			<div id="48" class="square"></div>
+			<div id="49" class="square"></div>
+			<div id="50" class="square"></div>
+			<div id="51" class="square"></div>
+			<div id="52" class="square"></div>
+			<div id="53" class="square"></div>
+			<div id="54" class="square"></div>
+			<div id="55" class="square"></div>
+		</div>
+
+		<div>
+			<div id="56" class="square"></div>
+			<div id="57" class="square"></div>
+			<div id="58" class="square"></div>
+			<div id="59" class="square"></div>
+			<div id="60" class="square"></div>
+			<div id="61" class="square"></div>
+			<div id="62" class="square"></div>
+			<div id="63" class="square"></div>
+		</div>
+
+	</body>
+</html>
