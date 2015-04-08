@@ -35,10 +35,7 @@ def handle_my_custom_event(data):
         i = i+1
     	arr = ge.getNextArray()
     	emit('updateArray', arr)
-        print 'Iteration %d' % i
-        for el in arr:
-            print el
-    	gevent.sleep(0.1)
+    	gevent.sleep(0.01)
 
 if __name__ == "__main__":
     socketio.run(app)
