@@ -51,7 +51,10 @@ while (1):
         i += 1
         calibrate_time += 0.05
         ave_volts += volts
+        print "ave_volts %.6f" % (ave_volts / i)
     else:
-        if volts > (ave_volts / i):
-            print "%.6f" % (volts)
+#        if volts > (ave_volts / i):
+#            print "%.6f" % (volts)
+         if volts > 0.05:
+             print "%.6f" % (volts)
     sleep(0.005)

@@ -61,6 +61,8 @@ def handle_my_custom_event(data):
         try:
             arr = ge.getNextArray()
             volts = adc.readADCSingleEnded(0, gain, sps) / 1000
+            if volts < 0.05:
+                volts = 0
             data = {}
             data['arr'] = arr
             data['volts'] = volts
