@@ -20,7 +20,7 @@ mypthread.c acts as a server with 2 independent threads dedicated to sending and
 
 #define PORT_NUMBER 5576
 #define BACKLOG 5
-#define IP_ADDR "127.0.0.1"
+#define IP_ADDR "128.237.115.141"
 
 char send_buf[128];
 char recv_buf[128];
