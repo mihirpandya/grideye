@@ -61,7 +61,10 @@ def handle_my_custom_event(data):
         try:
             arr = ge.getNextArray()
             volts = adc.readADCSingleEnded(0, gain, sps) / 1000
-            emit('updateArray', i % 64)
+            data = {}
+            data['arr'] = arr
+            data['volts'] = volts
+            emit('updateArray', arr)
             gevent.sleep(0.01)
         except Exception as e:
             print e
