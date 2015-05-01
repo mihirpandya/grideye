@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask.ext.socketio import send, emit, SocketIO
 from grideye import Grideye
 from json import dumps
-import time, gevent
+import time, gevent, sys
 
 sys.path.insert(0, 'Adafruit-Raspberry-Pi-Python-Code/Adafruit_ADS1x15/')
 
@@ -64,7 +64,7 @@ def handle_my_custom_event(data):
             data = {}
             data['arr'] = arr
             data['volts'] = volts
-            emit('updateArray', arr)
+            emit('updateArray', data)
             gevent.sleep(0.01)
         except Exception as e:
             print e
