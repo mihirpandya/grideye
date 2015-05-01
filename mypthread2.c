@@ -28,11 +28,13 @@ int sockfd, newfd;
 
 void *send_func( void *arg )
 {
-        FILE * ge;
-        ge = fopen("/dev/ttyUSB0", "r");
+        int ge;
+        ge = open("/dev/ttyUSB0", "r");
 	while(1) {
-	    fgets(send_buf, sizeof(send_buf), ge);
+            read(ge, send_buf, sizeof(send_buf));
+            //fgets(send_buf, sizeof(send_buf), ge);
 	    send(sockfd, send_buf, sizeof(send_buf), 0);
+            sleep(0.02);
 	}
 }
 
@@ -43,7 +45,7 @@ void *recv_func( void *arg )
 	if(recv(sockfd, recv_buf, sizeof(recv_buf), 0) == 0) {
 		printf("Connection terminated.\n");
 		exit(EXIT_FAILURE);
-		}
+	}
 	fputs(recv_buf, stdout);
 	}
 }
