@@ -32,35 +32,61 @@
 	    	updateIterations++;
 	    	var node, c, size;
 
-	    	for (i = 0; i < data.length; i++) {
-	    		for (j = 0; j < data[i].length; j++) {
-	    			node = document.getElementById(8*i+j)
-	    			c = data[i][j]
+  			node = document.getElementById(data);
+  			// c = 100;
 
-    				if (updateIterations <= 20) {
-    					if (!curMin || c < curMin) {
-    						curMin = c;
-    					}
-    					if (!curMax ||c > curMax) {
-    						curMax = c;
-    					}
-    				}
+				// if (updateIterations <= 20) {
+				// 	if (!curMin || c < curMin) {
+				// 		curMin = c;
+				// 	}
+				// 	if (!curMax ||c > curMax) {
+				// 		curMax = c;
+				// 	}
+				// }
 
-    				if (updateIterations > 20) {
-	    				ghettoMedian = (curMin + curMax) / 2;
-	    				amp =  MAX_R_VALUE / (curMax - curMin);
+				// if (updateIterations > 20) {
+  				// ghettoMedian = (curMin + curMax) / 2;
+  				// amp =  MAX_R_VALUE / (curMax - curMin);
 
-	    				amplifiedValue = ghettoMedian + (c - ghettoMedian) * amp;
-	    				var px = ~~(amplifiedValue / 14);
+  				// amplifiedValue = ghettoMedian + (c - ghettoMedian) * amp;
+  				// var px = ~~(amplifiedValue / 14);
 
-		    			node.style.backgroundColor = 'rgb('+amplifiedValue+',0,0)'
-		    			node.style.width = (100 + px*2).toString() + "px";
-		    			node.style.height = (100 + px*2).toString() + "px";
-		    			node.style.margin = (20 - px).toString() + "px";
+    			node.style.backgroundColor = 'rgb('+'255'+',0,0)';
+    			// node.style.width = (100 + px*2).toString() + "px";
+    			// node.style.height = (100 + px*2).toString() + "px";
+    			// node.style.margin = (20 - px).toString() + "px";
 
-    				}
-	    		}
-	    	}
+				// }
+
+	    	// for (i = 0; i < data.length; i++) {
+	    	// 	for (j = 0; j < data[i].length; j++) {
+	    	// 		node = document.getElementById(8*i+j)
+	    	// 		c = data[i][j]
+
+    		// 		if (updateIterations <= 20) {
+    		// 			if (!curMin || c < curMin) {
+    		// 				curMin = c;
+    		// 			}
+    		// 			if (!curMax ||c > curMax) {
+    		// 				curMax = c;
+    		// 			}
+    		// 		}
+
+    		// 		if (updateIterations > 20) {
+	    	// 			ghettoMedian = (curMin + curMax) / 2;
+	    	// 			amp =  MAX_R_VALUE / (curMax - curMin);
+
+	    	// 			amplifiedValue = ghettoMedian + (c - ghettoMedian) * amp;
+	    	// 			var px = ~~(amplifiedValue / 14);
+
+		    // 			node.style.backgroundColor = 'rgb('+amplifiedValue+',0,0)'
+		    // 			node.style.width = (100 + px*2).toString() + "px";
+		    // 			node.style.height = (100 + px*2).toString() + "px";
+		    // 			node.style.margin = (20 - px).toString() + "px";
+
+    		// 		}
+	    	// 	}
+	    	// }
 	    });
 	</script>
 
