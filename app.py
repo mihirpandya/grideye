@@ -35,9 +35,13 @@ def handle_my_custom_event(data):
     i = 1
     while(1):
         i = i+1
-        arr = ge.getNextArray()
-        emit('updateArray', i % 64)
-        gevent.sleep(0.01)
+        try:
+            arr = ge.getNextArray()
+            emit('updateArray', i % 64)
+            gevent.sleep(0.01)
+        except Exception as e:
+            print e
+            continue
 
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0")
