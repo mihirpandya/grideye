@@ -5,7 +5,7 @@ import serial, time
 
 class Grideye():
 
-	SERIAL_PATH = '/dev/tty.usbserial-AE00BUKF'
+	SERIAL_PATH = '/dev/ttyUSB0'
 	BAUD_RATE = 115200
 	PREFIX = '$GRIDEYE'
 	ser = None
@@ -35,7 +35,7 @@ class Grideye():
 			row_l = row[0].split(',')
 			row_ints = list()
 			for i in xrange(2, 10):
-				row_ints.append(int(row_l[i], 16))
+		                row_ints.append(int(row_l[i][-3:], 16))
 			result[int(row_l[1])] = row_ints
 		return result
 
