@@ -147,11 +147,11 @@ angular.module('ezpzeApp', ['ngRoute'])
             total: $scope.grid[i][j].threshold.total + heatIndex,
             min: Math.min($scope.grid[i][j].threshold.min, heatIndex),
             av: ($scope.grid[i][j].threshold.total + heatIndex) / iterations,
-            max: Math.max($scope.grid[i][j].threshold.min, heatIndex),
+            max: Math.max($scope.grid[i][j].threshold.max, heatIndex),
           };
         }
         else if (mode === OPERATION_MODE) {
-          size = heatIndex > $scope.grid[i][j].threshold.av ? 80 : 20;
+          size = heatIndex > $scope.grid[i][j].threshold.max + 5 ? 80 : 20;
           offset = getOffsetsFromDiameter(size);
           $scope.grid[i][j].style = {
             width: size + 'px',
@@ -172,23 +172,23 @@ angular.module('ezpzeApp', ['ngRoute'])
   }
 
   socket.on('updateArray', function(data) {
-    console.log('updateArray');
+
+    $scope.$apply(function () {
 
     iterations++;
 
     var volts = data.volts;
-    var grid = data.array;
-
-    if ($scope.iterations <= 100) {
+    var grid = data.arr;
+    if (iterations <= 20) {
       updateGrid(CALIBRATION_MODE, grid);
-      if ($scope.iterations === 100) {
-        $scope.calibrating = false;
+      if (iterations == 20) {
+$scope.calibrating = false;
       }
       // calibrateTouch(volts);
     } else {
       updateGrid(OPERATION_MODE, grid);
     }
-
+	});
   });
 
 }]);
