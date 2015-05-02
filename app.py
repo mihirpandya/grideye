@@ -5,7 +5,7 @@ from json import dumps
 import time, gevent, sys
 
 
-PROD = False
+PROD = True
 
 app = Flask(__name__)
 socketio = SocketIO(app)

@@ -53,6 +53,93 @@ html, body {
   font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
 }
 
+
+/*-------------------------------------------------------------*/
+/* FONTS  */
+
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,400italic);
+
+/*-------------------------------------------------------------*/
+/* GLOBAL DEFAULTS */
+
+* { 
+  margin:0; padding: 0;
+}
+
+article, aside, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+html, body{ 
+  margin: 0; 
+  padding: 0; 
+}
+
+h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, 
+cite, code, img, small, strike, strong, em, sub, sup, tt, dd, dl, dt, 
+li, ol, ul, fieldset, form, label, legend, button, table, caption, 
+tbody, tfoot, thead, tr, th, td, section, div, input{ 
+  margin: 0; 
+  padding: 0; 
+  border: 0; 
+  font-family: 'Lato', sans-serif;
+  font-style: normal;
+  font-size: 100%; 
+  line-height: 1;
+  text-align: inherit;
+  font-weight: 300;
+}
+
+
+/*-------------------------------------------------------------*/
+/* DOC SPECIFIC */
+
+.wrapper{
+  width: 600px;
+  height: 750px;
+  margin: 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -300px;
+  margin-top: -375px;
+}
+
+.wrapper #display{
+  width: 580px;
+  height: 148px;
+  background-color: #333;
+  margin-bottom: 2px;
+  text-align: right;
+  font-size: 60px;
+  color: white;
+  line-height: 148px;
+  padding: 0px 10px;
+}
+
+.wrapper .button {
+  width: 148px;
+  height: 148px;
+  background-color: #f0f0f0;
+  margin: 1px;
+  float: left;
+  line-height: 148px;
+  text-align: center;
+  font-size: 32px;
+  position: relative;
+  cursor: pointer;
+}
+
+.wrapper .button:active{
+  top: 1px;
+  background-color: #e8e8e8;
+}
+
+.wrapper .long{
+  width: 298px;
+}
+
+
 .grid-wrapper {
   position: relative;
   width: 100%;
