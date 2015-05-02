@@ -147,7 +147,6 @@ angular.module('ezpzeApp', ['ngRoute'])
           that.grid[i][j].heatIndex = heatIndex;
           on = heatIndex > (that.grid[i][j].threshold.max + 4) && that.tapped;
           size = on ? ON_SIZE : OFF_SIZE;
-          that.didTap = on;
           bgColor = on ? ON_BG_COLOR : OFF_BG_COLOR;
           offset = getOffsetsFromDiameter(size);
           that.grid[i][j].style = {
@@ -192,6 +191,7 @@ angular.module('ezpzeApp', ['ngRoute'])
     else if (mode === OPERATION_MODE) {
       that.touch.volts = volts;
       that.touch.on = volts > 0.05 ? true : false;
+      that.didTap = that.touch.on;
       if (that.touch.on) {
         that.tapped = !that.tapped;
       }
