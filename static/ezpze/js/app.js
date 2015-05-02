@@ -5,76 +5,6 @@ socket.on('connect', function() {
     socket.emit('startUpdate', {data: 'I\'m connected!'});
 });
 
-// var updateIterations = 0;
-// var curMin, curMax;
-// var range, ghettoMedian;
-// var amp;
-// var mappedRange, amplifiedValue;
-// var MAX_R_VALUE = 255;
-
-// socket.on('updateArray', function(data) {
-//   updateIterations++;
-//   var node, c, size, allData;
-//   allData = data
-//   data = allData['arr']
-//   //node = document.getElementById(data);
-//    c = 100;
-
-//    if (updateIterations <= 20) {
-//     if (!curMin || c < curMin) {
-//       curMin = c;
-//     }
-//     if (!curMax ||c > curMax) {
-//       curMax = c;
-//     }
-//    }
-
-//    if (updateIterations > 20) {
-//      ghettoMedian = (curMin + curMax) / 2;
-//      amp =  MAX_R_VALUE / (curMax - curMin);
-
-//      amplifiedValue = ghettoMedian + (c - ghettoMedian) * amp;
-//      var px = ~~(amplifiedValue / 14);
-
-//     //node.style.backgroundColor = 'rgb('+'255'+',0,0)';
-//      //node.style.width = (100 + px*2).toString() + "px";
-//      //node.style.height = (100 + px*2).toString() + "px";
-//      //node.style.margin = (20 - px).toString() + "px";
-
-//    }
-
-//    for (i = 0; i < data.length; i++) {
-//     for (j = 0; j < data[i].length; j++) {
-//       node = document.getElementById(8*i+j)
-//       c = data[i][j]
-
-//       if (updateIterations <= 20) {
-//         if (!curMin || c < curMin) {
-//           curMin = c;
-//         }
-//         if (!curMax ||c > curMax) {
-//           curMax = c;
-//         }
-//       }
-
-//       if (updateIterations > 20) {
-//         ghettoMedian = (curMin + curMax) / 2;
-//         amp =  MAX_R_VALUE / (curMax - curMin);
-
-//         amplifiedValue = ghettoMedian + (c - ghettoMedian) * amp;
-//         var px = ~~(amplifiedValue / 14);
-
-//         node.style.backgroundColor = 'rgb('+amplifiedValue+',0,0)'
-//         node.style.width = (100 + px*2).toString() + "px";
-//         node.style.height = (100 + px*2).toString() + "px";
-//         node.style.margin = (20 - px).toString() + "px";
-
-//       }
-//     }
-//    }
-// });
-
-
 angular.module('ezpzeApp', ['ngRoute'])
 
 .config(['$httpProvider', '$routeProvider', '$locationProvider',
@@ -96,6 +26,8 @@ angular.module('ezpzeApp', ['ngRoute'])
 
 .controller('HomeCtrl', [ '$scope', function ($scope) {
 
+  $scope.DEBUG = true;
+
   $scope.calibrating = true;
   var iterations = 0;
 
@@ -111,6 +43,7 @@ angular.module('ezpzeApp', ['ngRoute'])
   }
 
   $scope.grid = [];
+  $scope.touch = {};
 
   var updateGrid = function (mode, grid) {
     var heatIndex, offset, size;
@@ -157,7 +90,7 @@ angular.module('ezpzeApp', ['ngRoute'])
         }
         else if (mode === OPERATION_MODE) {
           $scope.grid[i][j].heatIndex = heatIndex;
-          size = heatIndex > ($scope.grid[i][j].threshold.max + ($scope.grid[i][j].threshold.range / 2)) ? 80 : 20;
+          size = heatIndex > ($scope.grid[i][j].threshold.max + 4) ? 80 : 20;
           offset = getOffsetsFromDiameter(size);
           $scope.grid[i][j].style = {
             width: size + 'px',
@@ -171,11 +104,35 @@ angular.module('ezpzeApp', ['ngRoute'])
     }
   }
 
-  updateGrid(RESET_MODE);
-
-  var calibrateTouch = function (volts) {
-    // body...
+  var updateTouch = function (mode, volts) {
+    if (mode === RESET_MODE) {
+      $scope.touch = {
+        total: 0,
+        min: 255,
+        av: 128,
+        max: 0,
+        range: 0,
+        on: false
+      };
+    }
+    else if (mode === CALIBRATION_MODE) {
+      $scope.touch = {
+        volts: volts,
+        total: $scope.touch.total + volts,
+        min: Math.min($scope.touch.min, volts),
+        av: ($scope.touch.total + volts) / iterations,
+        max: Math.max($scope.touch.max, volts),
+        range: $scope.touch.max - $scope.touch.min
+      };
+    }
+    else if (mode === OPERATION_MODE) {
+      $scope.touch.volts = volts;
+      $scope.touch.on = volts > $scope.touch.max ? true : false;
+    }
   }
+
+  updateGrid(RESET_MODE);
+  updateTouch(RESET_MODE);
 
   socket.on('updateArray', function(data) {
     $scope.$apply(function () {
@@ -185,12 +142,13 @@ angular.module('ezpzeApp', ['ngRoute'])
 
       if (iterations <= CALIBRATION_COUNT) {
         updateGrid(CALIBRATION_MODE, grid);
+        updateTouch(CALIBRATION_MODE, volts);
         if (iterations == CALIBRATION_COUNT) {
           $scope.calibrating = false;
         }
-        // calibrateTouch(volts);
       } else {
         updateGrid(OPERATION_MODE, grid);
+        updateTouch(OPERATION_MODE, volts);
       }
   	});
   });

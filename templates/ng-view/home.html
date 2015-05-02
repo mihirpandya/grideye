@@ -3,17 +3,20 @@
   <div ng-repeat="row in grid">
     <div ng-repeat="col in row" id="{{col.id}}" class="square">
       <div ng-style="col.style" class="circle">
-        <p>{{col.heatIndex}}</p>
-        <p>{{col.threshold.min}}</p>
-        <p>{{col.threshold.av}}</p>
-        <p>{{col.threshold.max}}</p>
-        <p>{{col.threshold.range}}</p>
+        <p ng-show="DEBUG">{{col.heatIndex}}</p>
+        <p ng-show="DEBUG">{{col.threshold.min}}</p>
+        <p ng-show="DEBUG">{{col.threshold.av}}</p>
+        <p ng-show="DEBUG">{{col.threshold.max}}</p>
+        <p ng-show="DEBUG">{{col.threshold.range}}</p>
       </div>
     </div>
   </div>
   <div ng-show="calibrating" class="calibrating"></div>
   <div ng-show="calibrating" class="message">
     Calibrating. . .
+  </div>
+  <div ng-show="touch.on" class="cursor-tapped">
+    TAPPED!
   </div>
 </div>
 
