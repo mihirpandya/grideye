@@ -1,0 +1,14 @@
+
+<div class="grid-wrapper">
+  <div ng-repeat="row in grid">
+    <div ng-repeat="col in row" id="{{col.id}}" class="square">
+      <div ng-style="col.style" class="circle">
+      </div>
+    </div>
+  </div>
+  <div ng-show="calibrating" class="calibrating"></div>
+  <div ng-show="calibrating" class="message">
+    Calibrating. . .
+  </div>
+</div>
+

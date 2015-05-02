@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask.ext.socketio import send, emit, SocketIO
 from grideye import Grideye
 from json import dumps
@@ -53,6 +53,16 @@ def hello():
         print str(e)
 
 
+@app.route("/templates/<path:path>")
+def templates(path):
+    return send_from_directory('templates', path)
+
+
+@app.route("/static/<path:path>")
+def statics(path):
+    return send_from_directory('static', path)
+
+
 @socketio.on('startUpdate')
 def handle_my_custom_event(data):
     i = 1
@@ -61,8 +71,8 @@ def handle_my_custom_event(data):
         try:
             arr = ge.getNextArray()
             volts = adc.readADCSingleEnded(0, gain, sps) / 1000
-            if volts < 0.05:
-                volts = 0
+            # if volts < 0.05:
+                # volts = 0
             data = {}
             data['arr'] = arr
             data['volts'] = volts
