@@ -314,6 +314,10 @@ angular.module('ezpzeApp', ['ngRoute'])
   socket.on('updateArray', function (data) {
     $scope.$apply(function () {
       GridService.update(data);
+      $scope.grid = GridService.getGrid();
+      $scope.touch = GridService.getTouch();
+      $scope.calibrating = GridService.getCalibrating();
+      $scope.tapped = GridService.getTapped();
   	});
   });
 
