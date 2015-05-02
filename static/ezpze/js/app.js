@@ -35,8 +35,8 @@ angular.module('ezpzeApp', ['ngRoute'])
   var OPERATION_MODE = 'operation';
 
   $scope.calibrating = true;
+  $scope.tapped = false;
   var iterations = 0;
-  var $scope.tapped = false;
 
 
   var getOffsetsFromDiameter = function (d) {
@@ -134,7 +134,7 @@ angular.module('ezpzeApp', ['ngRoute'])
     }
     else if (mode === OPERATION_MODE) {
       $scope.touch.volts = volts;
-      $scope.touch.on = volts > $scope.touch.max ? true : false;
+      $scope.touch.on = volts > 0.05 ? true : false;
       if ($scope.touch.on) {
         $scope.tapped = !$scope.tapped;
       }
