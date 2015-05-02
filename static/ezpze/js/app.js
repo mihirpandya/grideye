@@ -131,7 +131,7 @@ angular.module('ezpzeApp', ['ngRoute'])
             id: i*8+j,
             threshold: {
               total: 0,
-              min: 0,
+              min: 255,
               av: 128,
               max: 0,
               range: 0
@@ -157,7 +157,7 @@ angular.module('ezpzeApp', ['ngRoute'])
         }
         else if (mode === OPERATION_MODE) {
           $scope.grid[i][j].heatIndex = heatIndex;
-          size = heatIndex > $scope.grid[i][j].threshold.max + 5 ? 80 : 20;
+          size = heatIndex > ($scope.grid[i][j].threshold.max + ($scope.grid[i][j].threshold.range / 2)) ? 80 : 20;
           offset = getOffsetsFromDiameter(size);
           $scope.grid[i][j].style = {
             width: size + 'px',
