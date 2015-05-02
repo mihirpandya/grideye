@@ -21,6 +21,11 @@ angular.module('ezpzeApp', ['ngRoute'])
         templateUrl: '/templates/ng-view/home.html',
         controller: 'HomeCtrl',
       })
+      .when('/arr', {
+        title: 'Home',
+        templateUrl: '/templates/ng-view/home.html',
+        controller: 'HomeCtrl',
+      })
       .when('/calculator', {
         title: 'Calculator',
         templateUrl: '/templates/ng-view/calculator.html',
@@ -230,7 +235,8 @@ angular.module('ezpzeApp', ['ngRoute'])
 
 }])
 
-.controller('HomeCtrl', [ '$scope', 'GridService', '$location', function ($scope, GridService, $location) {
+.controller('HomeCtrl', [ '$scope', 'GridService', '$location',
+  function ($scope, GridService, $location) {
 
   $scope.DEBUG = false;
 
@@ -239,7 +245,10 @@ angular.module('ezpzeApp', ['ngRoute'])
   $scope.calibrating = GridService.getCalibrating();
   $scope.tapped = GridService.getTapped();
 
-  GridService.setGridParams(100, 80, 0, 'transparent', 'transparent');
+  console.log($location.path());
+  if ($location.path() !== '/arr') {
+    GridService.setGridParams(100, 80, 0, 'transparent', 'transparent');
+  }
 
   socket.on('updateArray', function (data) {
     $scope.$apply(function () {

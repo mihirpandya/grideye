@@ -49,6 +49,7 @@ sampleArray = [
 
 
 @app.route("/")
+@app.route("/arr")
 @app.route("/calculator")
 def hello():
     try:
