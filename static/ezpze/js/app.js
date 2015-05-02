@@ -62,6 +62,14 @@ angular.module('ezpzeApp', ['ngRoute'])
     return that.touch;
   }
 
+  res.getCalibrating = function () {
+    return that.calibrating;
+  }
+
+  res.getTapped = function () {
+    return that.tapped;
+  }
+
   var updateGrid = function (mode, grid) {
     var heatIndex, offset, size, on;
     var foundTip = false;
@@ -191,8 +199,8 @@ angular.module('ezpzeApp', ['ngRoute'])
   // var CALIBRATION_MODE = 'calibration';
   // var OPERATION_MODE = 'operation';
 
-  // $scope.calibrating = true;
-  // $scope.tapped = false;
+  $scope.calibrating = true;
+  $scope.tapped = false;
   // var iterations = 0;
 
 
@@ -202,6 +210,8 @@ angular.module('ezpzeApp', ['ngRoute'])
 
   $scope.grid = GridService.getGrid();
   $scope.touch = GridService.getTouch();
+  $scope.calibrating = GridService.getCalibrating();
+  $scope.tapped = GridService.getTapped();
 
   // var updateGrid = function (mode, grid) {
   //   var heatIndex, offset, size, on;
