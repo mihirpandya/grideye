@@ -46,7 +46,8 @@ angular.module('ezpzeApp', ['ngRoute'])
   $scope.touch = {};
 
   var updateGrid = function (mode, grid) {
-    var heatIndex, offset, size;
+    var heatIndex, offset, size, on;
+    var foundTip = false;
     for (var i = 0; i < 8; i++) {
       if (mode === RESET_MODE) {
         $scope.grid.push([]);
@@ -90,13 +91,18 @@ angular.module('ezpzeApp', ['ngRoute'])
         }
         else if (mode === OPERATION_MODE) {
           $scope.grid[i][j].heatIndex = heatIndex;
-          size = heatIndex > ($scope.grid[i][j].threshold.max + 4) ? 80 : 20;
+          on = heatIndex > ($scope.grid[i][j].threshold.max + 4);
+          size = on ? 80 : 20;
           offset = getOffsetsFromDiameter(size);
           $scope.grid[i][j].style = {
             width: size + 'px',
             height: size + 'px',
             top: offset + 'px',
             left: offset + 'px'
+          }
+          if (!foundTip && on) {
+            $scope.grid[i][j].style.backgroundColor = 'red';
+            foundTip = true;
           }
         }
 
