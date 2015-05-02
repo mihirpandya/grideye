@@ -3,6 +3,11 @@
   <div ng-repeat="row in grid">
     <div ng-repeat="col in row" id="{{col.id}}" class="square">
       <div ng-style="col.style" class="circle">
+        <p>{{col.heatIndex}}</p>
+        <p>{{col.threshold.min}}</p>
+        <p>{{col.threshold.av}}</p>
+        <p>{{col.threshold.max}}</p>
+        <p>{{col.threshold.range}}</p>
       </div>
     </div>
   </div>

@@ -100,6 +100,7 @@ angular.module('ezpzeApp', ['ngRoute'])
   var iterations = 0;
 
   var SQUARE_LENGTH = 100;
+  var CALIBRATION_COUNT = 20;
   var RESET_MODE = 'reset';
   var CALIBRATION_MODE = 'calibration';
   var OPERATION_MODE = 'operation';
@@ -133,24 +134,29 @@ angular.module('ezpzeApp', ['ngRoute'])
               min: 0,
               av: 128,
               max: 0,
+              range: 0
             },
             style: {
               width: heatIndex + 'px',
               height: heatIndex + 'px',
               top: offset + 'px',
               left: offset + 'px'
-            }
+            },
+            heatIndex: undefined
           });
         }
         else if (mode === CALIBRATION_MODE) {
+          $scope.grid[i][j].heatIndex = heatIndex;
           $scope.grid[i][j].threshold = {
             total: $scope.grid[i][j].threshold.total + heatIndex,
             min: Math.min($scope.grid[i][j].threshold.min, heatIndex),
             av: ($scope.grid[i][j].threshold.total + heatIndex) / iterations,
             max: Math.max($scope.grid[i][j].threshold.max, heatIndex),
+            range: $scope.grid[i][j].threshold.max - $scope.grid[i][j].threshold.min
           };
         }
         else if (mode === OPERATION_MODE) {
+          $scope.grid[i][j].heatIndex = heatIndex;
           size = heatIndex > $scope.grid[i][j].threshold.max + 5 ? 80 : 20;
           offset = getOffsetsFromDiameter(size);
           $scope.grid[i][j].style = {
@@ -172,23 +178,21 @@ angular.module('ezpzeApp', ['ngRoute'])
   }
 
   socket.on('updateArray', function(data) {
-
     $scope.$apply(function () {
+      iterations++;
+      var volts = data.volts;
+      var grid = data.arr;
 
-    iterations++;
-
-    var volts = data.volts;
-    var grid = data.arr;
-    if (iterations <= 20) {
-      updateGrid(CALIBRATION_MODE, grid);
-      if (iterations == 20) {
-$scope.calibrating = false;
+      if (iterations <= CALIBRATION_COUNT) {
+        updateGrid(CALIBRATION_MODE, grid);
+        if (iterations == CALIBRATION_COUNT) {
+          $scope.calibrating = false;
+        }
+        // calibrateTouch(volts);
+      } else {
+        updateGrid(OPERATION_MODE, grid);
       }
-      // calibrateTouch(volts);
-    } else {
-      updateGrid(OPERATION_MODE, grid);
-    }
-	});
+  	});
   });
 
 }]);
