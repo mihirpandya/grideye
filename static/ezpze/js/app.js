@@ -26,16 +26,17 @@ angular.module('ezpzeApp', ['ngRoute'])
 
 .controller('HomeCtrl', [ '$scope', function ($scope) {
 
-  $scope.DEBUG = true;
-
-  $scope.calibrating = true;
-  var iterations = 0;
+  $scope.DEBUG = false;
 
   var SQUARE_LENGTH = 100;
   var CALIBRATION_COUNT = 20;
   var RESET_MODE = 'reset';
   var CALIBRATION_MODE = 'calibration';
   var OPERATION_MODE = 'operation';
+
+  $scope.calibrating = true;
+  var iterations = 0;
+  var $scope.tapped = false;
 
 
   var getOffsetsFromDiameter = function (d) {
@@ -91,7 +92,7 @@ angular.module('ezpzeApp', ['ngRoute'])
         }
         else if (mode === OPERATION_MODE) {
           $scope.grid[i][j].heatIndex = heatIndex;
-          on = heatIndex > ($scope.grid[i][j].threshold.max + 4);
+          on = heatIndex > ($scope.grid[i][j].threshold.max + 4) && $scope.tapped;
           size = on ? 80 : 20;
           offset = getOffsetsFromDiameter(size);
           $scope.grid[i][j].style = {
@@ -134,6 +135,9 @@ angular.module('ezpzeApp', ['ngRoute'])
     else if (mode === OPERATION_MODE) {
       $scope.touch.volts = volts;
       $scope.touch.on = volts > $scope.touch.max ? true : false;
+      if ($scope.touch.on) {
+        $scope.tapped = !$scope.tapped;
+      }
     }
   }
 
