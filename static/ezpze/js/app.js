@@ -51,6 +51,7 @@ angular.module('ezpzeApp', ['ngRoute'])
   that.tapped = false;
   that.didTap = false;
   that.tipIndex = undefined;
+  that.coffee = false;
   var iterations = 0;
 
 
@@ -67,6 +68,10 @@ angular.module('ezpzeApp', ['ngRoute'])
     OFF_SIZE = offSize;
     ON_BG_COLOR = onBgColor;
     OFF_BG_COLOR = offBgColor;
+  }
+
+  res.getCoffee = function () {
+    return that.coffee;
   }
 
   res.getGrid = function () {
@@ -146,6 +151,9 @@ angular.module('ezpzeApp', ['ngRoute'])
         else if (mode === OPERATION_MODE) {
           that.grid[i][j].heatIndex = heatIndex;
           on = heatIndex > (that.grid[i][j].threshold.max + 4) && that.tapped;
+          if (heatIndex > 170) {
+            that.coffee = true;
+          }
           size = on ? ON_SIZE : OFF_SIZE;
           bgColor = on ? ON_BG_COLOR : OFF_BG_COLOR;
           offset = getOffsetsFromDiameter(size);
@@ -222,7 +230,7 @@ angular.module('ezpzeApp', ['ngRoute'])
 
 }])
 
-.controller('HomeCtrl', [ '$scope', 'GridService', function ($scope, GridService) {
+.controller('HomeCtrl', [ '$scope', 'GridService', '$location', function ($scope, GridService, $location) {
 
   $scope.DEBUG = false;
 
@@ -240,6 +248,9 @@ angular.module('ezpzeApp', ['ngRoute'])
       $scope.touch = GridService.getTouch();
       $scope.calibrating = GridService.getCalibrating();
       $scope.tapped = GridService.getTapped();
+      if (GridService.getCoffee()) {
+        $location.path("http://www.ecebros.com/549");
+      }
   	});
   });
 
