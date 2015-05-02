@@ -37,6 +37,11 @@ angular.module('ezpzeApp', ['ngRoute'])
   that.DEBUG = false;
 
   var SQUARE_LENGTH = 100;
+  var ON_SIZE = 80;
+  var OFF_SIZE = 20;
+  var ON_BG_COLOR = "#AAAAAA";
+  var OFF_BG_COLOR = "#AAAAAA";
+
   var CALIBRATION_COUNT = 20;
   var RESET_MODE = 'reset';
   var CALIBRATION_MODE = 'calibration';
@@ -53,6 +58,14 @@ angular.module('ezpzeApp', ['ngRoute'])
 
   that.grid = [];
   that.touch = {};
+
+  res.setGridParams = function (length, onSize, offSize, onBgColor, offBgColor) {
+    SQUARE_LENGTH = length;
+    ON_SIZE = onSize;
+    OFF_SIZE = offSize;
+    ON_BG_COLOR = onBgColor;
+    OFF_BG_COLOR = offBgColor;
+  }
 
   res.getGrid = function () {
     return that.grid;
@@ -71,7 +84,7 @@ angular.module('ezpzeApp', ['ngRoute'])
   }
 
   var updateGrid = function (mode, grid) {
-    var heatIndex, offset, size, on;
+    var heatIndex, offset, size, on, color;
     var foundTip = false;
     for (var i = 0; i < 8; i++) {
       if (mode === RESET_MODE) {
@@ -79,7 +92,7 @@ angular.module('ezpzeApp', ['ngRoute'])
       }
       for (var j = 0; j < 8; j++) {
         if (mode === RESET_MODE) {
-          heatIndex = 20;
+          heatIndex = OFF_SIZE;
         } else {
           heatIndex = grid[i][j]; // 0~255
         }
@@ -99,7 +112,8 @@ angular.module('ezpzeApp', ['ngRoute'])
               width: heatIndex + 'px',
               height: heatIndex + 'px',
               top: offset + 'px',
-              left: offset + 'px'
+              left: offset + 'px',
+              backgroundColor: OFF_BG_COLOR
             },
             heatIndex: undefined
           });
@@ -117,13 +131,15 @@ angular.module('ezpzeApp', ['ngRoute'])
         else if (mode === OPERATION_MODE) {
           that.grid[i][j].heatIndex = heatIndex;
           on = heatIndex > (that.grid[i][j].threshold.max + 4) && that.tapped;
-          size = on ? 80 : 20;
+          size = on ? ON_SIZE : OFF_SIZE;
+          bgColor = on ? ON_BG_COLOR : OFF_BG_COLOR;
           offset = getOffsetsFromDiameter(size);
           that.grid[i][j].style = {
             width: size + 'px',
             height: size + 'px',
             top: offset + 'px',
-            left: offset + 'px'
+            left: offset + 'px',
+            backgroundColor: bgColor
           }
           if (!foundTip && on) {
             that.grid[i][j].style.backgroundColor = 'red';
@@ -197,6 +213,8 @@ angular.module('ezpzeApp', ['ngRoute'])
   $scope.touch = GridService.getTouch();
   $scope.calibrating = GridService.getCalibrating();
   $scope.tapped = GridService.getTapped();
+
+  GridService.setGridParams(100, 80, 0, 'transparent', 'transparent');
 
   socket.on('updateArray', function (data) {
     $scope.$apply(function () {
