@@ -184,6 +184,16 @@ tbody, tfoot, thead, tr, th, td, section, div, input{
   /*border: 1px solid black;*/
 }
 
+.grid-wrapper.calculator {
+  top: 155px;
+  left: 288px;
+}
+
+.grid-wrapper.calculator .square {
+  height: 75px;
+  width: 75px;
+}
+
 .grid-wrapper .circle {
   position: absolute;
   background-color: #aaa;

@@ -49,6 +49,8 @@ angular.module('ezpzeApp', ['ngRoute'])
 
   that.calibrating = true;
   that.tapped = false;
+  that.didTap = false;
+  that.tipIndex = undefined;
   var iterations = 0;
 
 
@@ -81,6 +83,19 @@ angular.module('ezpzeApp', ['ngRoute'])
 
   res.getTapped = function () {
     return that.tapped;
+  }
+
+  res.didTap = function () {
+    return that.didTap;
+  }
+
+  res.getTipIndex = function () {
+    return that.tipIndex;
+  }
+
+  res.reset = function () {
+    updateGrid(RESET_MODE);
+    updateTouch(RESET_MODE);
   }
 
   var updateGrid = function (mode, grid) {
@@ -132,6 +147,7 @@ angular.module('ezpzeApp', ['ngRoute'])
           that.grid[i][j].heatIndex = heatIndex;
           on = heatIndex > (that.grid[i][j].threshold.max + 4) && that.tapped;
           size = on ? ON_SIZE : OFF_SIZE;
+          that.didTap = on;
           bgColor = on ? ON_BG_COLOR : OFF_BG_COLOR;
           offset = getOffsetsFromDiameter(size);
           that.grid[i][j].style = {
@@ -144,6 +160,7 @@ angular.module('ezpzeApp', ['ngRoute'])
           if (!foundTip && on) {
             that.grid[i][j].style.backgroundColor = 'red';
             foundTip = true;
+            that.tipIndex = i * 8 + j;
           }
         }
 
@@ -230,6 +247,67 @@ angular.module('ezpzeApp', ['ngRoute'])
 
 .controller('CalculatorCtrl', [ '$scope', 'GridService', function ($scope, GridService) {
 
+  $scope.grid = GridService.getGrid();
+  $scope.touch = GridService.getTouch();
+  $scope.calibrating = GridService.getCalibrating();
+  $scope.tapped = GridService.getTapped();
+
+  GridService.setGridParams(75, 60, 0, 'transparent', 'transparent');
+
+  GridService.reset();
+
+  $scope.tip;
+
+  socket.on('updateArray', function (data) {
+    $scope.$apply(function () {
+      GridService.update(data);
+      $scope.grid = GridService.getGrid();
+      $scope.touch = GridService.getTouch();
+      $scope.calibrating = GridService.getCalibrating();
+      $scope.tapped = GridService.getTapped();
+      if (GridService.didTap()) {
+        console.log('tapped');
+        $scope.tip = GridService.getTipIndex();
+        console.log(GridService.getTipIndex());
+
+        if ($scope.tip == 0 || $scope.tip == 1 || $scope.tip == 8 || $scope.tip == 9) {
+          $scope.numClick('7');
+        } else if ($scope.tip == 2 || $scope.tip == 3 || $scope.tip == 10 || $scope.tip == 11) {
+          $scope.numClick('8');
+        } else if ($scope.tip == 4 || $scope.tip == 5 || $scope.tip == 12 || $scope.tip == 13) {
+          $scope.numClick('9');
+        } else if ($scope.tip == 6 || $scope.tip == 7 || $scope.tip == 14 || $scope.tip == 15) {
+          $scope.opClick('/');
+        } else if ($scope.tip == 16 || $scope.tip == 17 || $scope.tip == 24 || $scope.tip == 25) {
+          $scope.numClick('4');
+        } else if ($scope.tip == 18 || $scope.tip == 19 || $scope.tip == 26 || $scope.tip == 27) {
+          $scope.numClick('5');
+        } else if ($scope.tip == 20 || $scope.tip == 21 || $scope.tip == 28 || $scope.tip == 29) {
+          $scope.numClick('6');
+        } else if ($scope.tip == 22 || $scope.tip == 23 || $scope.tip == 30 || $scope.tip == 31) {
+          $scope.opClick('*');
+        } else if ($scope.tip == 32 || $scope.tip == 33 || $scope.tip == 40 || $scope.tip == 41) {
+          $scope.numClick('1');
+        } else if ($scope.tip == 34 || $scope.tip == 35 || $scope.tip == 42 || $scope.tip == 43) {
+          $scope.numClick('2');
+        } else if ($scope.tip == 36 || $scope.tip == 37 || $scope.tip == 44 || $scope.tip == 45) {
+          $scope.numClick('3');
+        } else if ($scope.tip == 38 || $scope.tip == 39 || $scope.tip == 46 || $scope.tip == 47) {
+          $scope.opClick('-');
+        } else if ($scope.tip == 48 || $scope.tip == 49 || $scope.tip == 56 || $scope.tip == 57) {
+          $scope.numClick('0');
+        } else if ($scope.tip == 50 || $scope.tip == 51 || $scope.tip == 58 || $scope.tip == 59) {
+          $scope.numClick('0');
+        } else if ($scope.tip == 52 || $scope.tip == 53 || $scope.tip == 60 || $scope.tip == 61) {
+          $scope.opClick('=');
+        } else if ($scope.tip == 54 || $scope.tip == 55 || $scope.tip == 62 || $scope.tip == 63) {
+          $scope.opClick('+');
+        }
+      }
+    });
+  });
+
+
   // initialise.
   $scope.currentValue = 0;
   var resetState = function () {
@@ -264,7 +342,6 @@ angular.module('ezpzeApp', ['ngRoute'])
   }
 
   var updateDisplay = function (str) {
-    // document.getElementById("display").innerHTML = str;
     $scope.display = str;
   }
   updateDisplay("0");
