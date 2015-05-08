@@ -101,19 +101,10 @@ angular.module('ezpzeApp')
 .controller('CalculatorCtrl', [ '$scope', 'GridService', 'SocketService',
   function ($scope, GridService, SocketService) {
 
-    // $scope.grid = GridService.getGrid();
     $scope.touch = GridService.getTouch();
     $scope.calibrating = GridService.isCalibrating();
     $scope.calibrating = false;
     $scope.tapped = GridService.getTapped();
-
-    // var params = {};
-    // params['squareLegnth'] = 75;
-    // params['onSize'] = 0;
-    // params['offSize'] = 0;
-    // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
-    // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
-    // GridService.init();
 
     GridService.resetGrid();
 
@@ -133,18 +124,21 @@ angular.module('ezpzeApp')
       y: 0
     });
 
+    var touchElement = document.getElementById("jam");
+
     SocketService.socket.on('updateArray', function (data) {
       $scope.$apply(function () {
         GridService.update(data);
-        $scope.grid = GridService.getGrid();
         $scope.touch = GridService.getTouch();
         $scope.calibrating = GridService.isCalibrating();
         $scope.tapped = GridService.getTapped();
-        setFingerTipStyle(GridService.getFingerTipPixel())
+        var fingerTip = GridService.getFingerTipPixel();
+        setFingerTipStyle(fingerTip);
         if (GridService.didTap()) {
           console.log('tapped');
           $scope.tip = GridService.getTipIndex();
           console.log(GridService.getTipIndex());
+          jam.click();
 
           if ($scope.tip == 0 || $scope.tip == 1 || $scope.tip == 8 || $scope.tip == 9) {
             $scope.numClick('7');

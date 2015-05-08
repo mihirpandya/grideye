@@ -228,8 +228,9 @@ tbody, tfoot, thead, tr, th, td, section, div, input{
 
 .grid-wrapper .finger-tip.calculator {
   background-color: red;
-  height: 150px;
-  width: 150px;
+  height: 70px;
+  width: 70px;
+  margin: 40px;
 }
 
 .cursor-tapped {
