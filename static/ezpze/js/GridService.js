@@ -178,10 +178,10 @@ angular.module('ezpzeApp')
       system.iterations++;
       var volts = data.volts;
       var grid = data.arr;
-      if (system.iterations <= CALIBRATION_COUNT) {
+      if (system.iterations <= params['calibrationCount']) {
         updateGrid(CALIBRATION_MODE, grid);
         updateTouch(CALIBRATION_MODE, volts);
-        if (system.iterations == CALIBRATION_COUNT) {
+        if (system.iterations == params['calibrationCount']) {
           system.calibrating = false;
         }
       } else {
