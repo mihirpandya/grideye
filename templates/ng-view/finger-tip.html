@@ -1,11 +1,14 @@
 <div class="grid-wrapper left">
 
-  <div ng-repeat="row in grid">
-    <div class='bg-square' ng-repeat="col in row">
-    </div>
-  </div>
+  <div ng-repeat="row in grid"><div class='bg-square' ng-repeat="col in row"></div></div>
 
   <div ng-style="fingerTipStyle" class="circle finger-tip">
   </div>
 
+</div>
+
+<div ng-show="calibrating" class="calibrating">
+  <div class="message">
+    Calibrating. . .
+  </div>
 </div>

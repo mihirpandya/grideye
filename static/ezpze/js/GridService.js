@@ -42,14 +42,16 @@ angular.module('ezpzeApp')
 
   // newTip = {x: someVal, y: someVal};
   var updateFingerTip = function (newTip) {
-    if (system.fingerTipQueue.length >=params['smoothening']) {
+    if (system.fingerTipQueue.length >= params['smoothening']) {
       system.fingerTipQueue.shift();
     }
-    system.fingerTipQueue.push(newTip);
+    if (angular.isDefined(newTip)) {
+      system.fingerTipQueue.push(newTip);
+    }
   }
 
   var updateGrid = function (mode, grid) {
-    var heatIndex, offset, size, on, color;
+    var heatIndex, offset, size, on, color, tappedOn;
     var foundTip = false;
     if (mode === RESET_MODE) {
       system.grid = [];
@@ -98,7 +100,7 @@ angular.module('ezpzeApp')
         }
         else if (mode === OPERATION_MODE) {
           system.grid[i][j].heatIndex = heatIndex;
-          on = heatIndex > (system.grid[i][j].threshold.max + ON_THRESHOLD) && system.tapped;
+          on = heatIndex > (system.grid[i][j].threshold.max + ON_THRESHOLD);
           if (heatIndex > COFFEE_THRESHOLD) {
             system.coffee = true;
           }
@@ -124,6 +126,9 @@ angular.module('ezpzeApp')
         }
 
       }
+    }
+    if (mode === OPERATION_MODE && !foundTip) {
+      updateFingerTip();
     }
   }
 
@@ -200,6 +205,10 @@ angular.module('ezpzeApp')
         x: 0,
         y: 0
       };
+      if (system.fingerTipQueue.length < 1) {
+        return total;
+      }
+
       for (var i = 0; i < system.fingerTipQueue.length; i++) {
         total.x += system.fingerTipQueue[i].x;
         total.y += system.fingerTipQueue[i].y;
@@ -210,6 +219,10 @@ angular.module('ezpzeApp')
       };
 
       return averageFingerTip;
+    },
+
+    isUndefined: function () {
+      return system.fingerTipQueue.length === 0;
     },
 
     getGrid: function () {

@@ -43,20 +43,9 @@ angular.module('ezpzeApp')
 .controller('FingerTipCtrl', [ '$scope', 'GridService', 'SocketService', '$location',
   function ($scope, GridService, SocketService, $location) {
 
-      // var params = {};
-      // params['squareLegnth'] = 100;
-      // params['onSize'] = 80;
-      // params['offSize'] = 0;
-      // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
-      // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
-      // GridService.init();
+    var UNIT_SIZE = 100;
 
-    // $scope.grid = GridService.getGrid();
-    // $scope.touch = GridService.getTouch();
-    // $scope.calibrating = GridService.isCalibrating();
-    // $scope.tapped = GridService.getTapped();
-
-    var UNIT_SIZE = 80;
+    // $scope.calibrating = true;
 
     $scope.grid = [];
     for (var i = 0; i < 8; i++) {
@@ -66,17 +55,19 @@ angular.module('ezpzeApp')
       }
     }
 
-    var setFingerTipStyle = function (fingerTip) {
+    var setFingerTipStyle = function (fingerTip, hide) {
+      var dis
       $scope.fingerTipStyle = {
         top: (fingerTip.y * UNIT_SIZE - UNIT_SIZE / 2).toString() + 'px',
         left: (fingerTip.x * UNIT_SIZE - UNIT_SIZE / 2).toString() + 'px',
+        display: hide ? 'none' : 'block'
       };
     };
 
     setFingerTipStyle({
-      x: 0,
-      y: 0
-    });
+      x: 7.5,
+      y: 7.5
+    }, true);
 
     SocketService.socket.on('connect', function () {
       SocketService.socket.emit('startUpdate', {data: 'I\'m connected!'});
@@ -85,14 +76,8 @@ angular.module('ezpzeApp')
     SocketService.socket.on('updateArray', function (data) {
       $scope.$apply(function () {
         GridService.update(data);
-        setFingerTipStyle(GridService.getFingerTipPixel())
-        // $scope.grid = GridService.getGrid();
-        // $scope.touch = GridService.getTouch();
-        // $scope.calibrating = GridService.isCalibrating();
-        // $scope.tapped = GridService.getTapped();
-        // if (GridService.getCoffee()) {
-          // $location.path("http://www.ecebros.com/549");
-        // }
+        $scope.calibrating = GridService.isCalibrating();
+        setFingerTipStyle(GridService.getFingerTipPixel(), GridService.isUndefined());
       });
     });
 
@@ -216,6 +201,8 @@ angular.module('ezpzeApp')
 
     $scope.crap =  function (event) {
       console.log(event);
+
+
     }
 
     var updateDisplay = function (str) {
