@@ -119,11 +119,16 @@ angular.module('ezpzeApp')
     };
 
     setFingerTipStyle({
-      x: 0,
-      y: 0
+      x: 0.5,
+      y: 0.5
     });
 
     var touchElement = document.getElementById("jam");
+
+    console.log(touchElement);
+
+    touchElement.click();
+
 
     SocketService.socket.on('updateArray', function (data) {
       $scope.$apply(function () {
@@ -136,7 +141,7 @@ angular.module('ezpzeApp')
           console.log('tapped');
           $scope.tip = GridService.getTipIndex();
           console.log(GridService.getTipIndex());
-          jam.click();
+          touchElement.click();
 
           if ($scope.tip == 0 || $scope.tip == 1 || $scope.tip == 8 || $scope.tip == 9) {
             $scope.numClick('7');
@@ -185,6 +190,7 @@ angular.module('ezpzeApp')
 
     // called when a number button is clicked.
     $scope.numClick = function (num) {
+      console.log('nuuu');
       $scope.currentValue = parseInt($scope.currentValue.toString() + num);
       updateDisplay($scope.currentValue);
     }
@@ -206,6 +212,10 @@ angular.module('ezpzeApp')
         res = "error";
       }
       updateDisplay(res);
+    }
+
+    $scope.crap =  function (event) {
+      console.log(event);
     }
 
     var updateDisplay = function (str) {
