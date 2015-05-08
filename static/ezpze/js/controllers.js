@@ -32,9 +32,9 @@ angular.module('ezpzeApp')
         $scope.touch = GridService.getTouch();
         $scope.calibrating = GridService.isCalibrating();
         $scope.tapped = GridService.getTapped();
-        if (GridService.getCoffee()) {
-          $location.path("http://www.ecebros.com/549");
-        }
+        // if (GridService.getCoffee()) {
+        //   $location.path("http://www.ecebros.com/549");
+        // }
       });
     });
 
