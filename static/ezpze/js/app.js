@@ -15,6 +15,11 @@ angular.module('ezpzeApp', ['ngRoute', 'btford.socket-io'])
         templateUrl: '/templates/ng-view/home.html',
         controller: 'HomeCtrl',
       })
+      .when('/finger-tip', {
+        title: 'Finger Tip',
+        templateUrl: '/templates/ng-view/finger-tip.html',
+        controller: 'FingerTipCtrl',
+      })
       .when('/arr', {
         title: 'Home',
         templateUrl: '/templates/ng-view/home.html',

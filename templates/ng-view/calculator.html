@@ -49,7 +49,9 @@
 </div>
 
 <div class="grid-wrapper calculator">
-  <div ng-repeat="row in grid">
+<div ng-style="fingerTipStyle" class="circle finger-tip calculator">
+  </div>
+<!--   <div ng-repeat="row in grid">
     <div ng-repeat="col in row" id="{{col.id}}" class="square">
       <div ng-style="col.style" class="circle">
         <p ng-show="DEBUG">{{col.heatIndex}}</p>
@@ -59,7 +61,7 @@
         <p ng-show="DEBUG">{{col.threshold.range}}</p>
       </div>
     </div>
-  </div>
+  </div> -->
   <div ng-show="calibrating" class="calibrating"></div>
   <div ng-show="tapped" class="cursor-tapped">
     TAPPED!

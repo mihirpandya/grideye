@@ -105,12 +105,12 @@ tbody, tfoot, thead, tr, th, td, section, div, input{
 .wrapper{
   width: 600px;
   height: 750px;
-  margin: 0 auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -300px;
-  margin-top: -375px;
+  /*margin: 0 auto;*/
+  /*position: absolute;*/
+  /*top: 50%;*/
+  /*left: 50%;*/
+  /*margin-left: -300px;*/
+  /*margin-top: -375px;*/
 }
 
 .wrapper #display{
@@ -184,9 +184,23 @@ tbody, tfoot, thead, tr, th, td, section, div, input{
   /*border: 1px solid black;*/
 }
 
+.grid-wrapper.left {
+  text-align: left;
+}
+
+.grid-wrapper .bg-square {
+  display: inline-block;
+  height: 78px;
+  width: 78px;
+  border: 1px solid #FFF;
+  background-color: #F7F7F7;
+}
+
 .grid-wrapper.calculator {
-  top: 155px;
-  left: 288px;
+  text-align: left;
+  position: absolute;
+  top: 150px;
+  left: 0;
 }
 
 .grid-wrapper.calculator .square {
@@ -202,6 +216,20 @@ tbody, tfoot, thead, tr, th, td, section, div, input{
   top: 0px;
   left: 0px;
   border-radius: 50%;
+}
+
+.grid-wrapper .finger-tip {
+  background-color: red;
+  height: 80px;
+  width: 80px;
+  top: 0px;
+  left: 0px;
+}
+
+.grid-wrapper .finger-tip.calculator {
+  background-color: red;
+  height: 150px;
+  width: 150px;
 }
 
 .cursor-tapped {

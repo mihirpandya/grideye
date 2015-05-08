@@ -2,95 +2,72 @@ angular.module('ezpzeApp')
 
 .factory('GridService', [ function () {
 
-  var that = {};
-  var res = {};
+  var DEBUG = false;
 
-  that.DEBUG = false;
-
-  var SQUARE_LENGTH = 100;
-  var ON_SIZE = 80;
-  var OFF_SIZE = 20;
-  var ON_BG_COLOR = "#AAAAAA";
-  var OFF_BG_COLOR = "#AAAAAA";
-
-  var CALIBRATION_COUNT = 20;
   var RESET_MODE = 'reset';
   var CALIBRATION_MODE = 'calibration';
   var OPERATION_MODE = 'operation';
+  var ON_THRESHOLD = 4;
+  var COFFEE_THRESHOLD = 170;
+  var ON_VOLTAGE = 0.05;
 
-  that.calibrating = true;
-  that.tapped = false;
-  that.didTap = false;
-  that.tipIndex = undefined;
-  that.coffee = false;
-  var iterations = 0;
+  var params = {};
 
+  (function () {
+    params['squareLength'] = 100;
+    params['onSize'] = 80;
+    params['offSize'] = 20;
+    params['onBgColor'] = '#A0A0A0';
+    params['onBgColor'] = '#A0A0A0';
+    params['calibrationCount'] = 20;
+    params['smoothening'] = 3;
+  })();
+
+  var system = {};
+  system.calibrating = true;
+  system.tapped = false;
+  system.didTap = false;
+  system.tipIndex = undefined;
+  system.coffee = false;
+  system.grid = [];
+  system.touch = {};
+  system.iterations = 0;
+  system.fingerTipQueue = [];
+
+  // interntal functions
 
   var getOffsetsFromDiameter = function (d) {
-    return (SQUARE_LENGTH - d) / 2;
+    return (params['squareLength'] - d) / 2;
   }
 
-  that.grid = [];
-  that.touch = {};
-
-  res.setGridParams = function (length, onSize, offSize, onBgColor, offBgColor) {
-    SQUARE_LENGTH = length;
-    ON_SIZE = onSize;
-    OFF_SIZE = offSize;
-    ON_BG_COLOR = onBgColor;
-    OFF_BG_COLOR = offBgColor;
-  }
-
-  res.getCoffee = function () {
-    return that.coffee;
-  }
-
-  res.getGrid = function () {
-    return that.grid;
-  }
-
-  res.getTouch = function () {
-    return that.touch;
-  }
-
-  res.getCalibrating = function () {
-    return that.calibrating;
-  }
-
-  res.getTapped = function () {
-    return that.tapped;
-  }
-
-  res.didTap = function () {
-    return that.didTap;
-  }
-
-  res.getTipIndex = function () {
-    return that.tipIndex;
-  }
-
-  res.resetGrid = function () {
-    updateGrid(RESET_MODE);
-    updateTouch(RESET_MODE);
+  // newTip = {x: someVal, y: someVal};
+  var updateFingerTip = function (newTip) {
+    if (system.fingerTipQueue.length >=params['smoothening']) {
+      system.fingerTipQueue.shift();
+    }
+    system.fingerTipQueue.push(newTip);
   }
 
   var updateGrid = function (mode, grid) {
     var heatIndex, offset, size, on, color;
     var foundTip = false;
+    if (mode === RESET_MODE) {
+      system.grid = [];
+    }
     for (var i = 0; i < 8; i++) {
       if (mode === RESET_MODE) {
-        that.grid.push([]);
+        system.grid.push([]);
       }
       for (var j = 0; j < 8; j++) {
         if (mode === RESET_MODE) {
-          heatIndex = OFF_SIZE;
+          heatIndex = params['offSize'];
         } else {
           heatIndex = grid[i][j]; // 0~255
         }
 
         if (mode === RESET_MODE) {
           offset = getOffsetsFromDiameter(heatIndex);
-          that.grid[i].push({
+          system.grid[i].push({
             id: i*8+j,
             threshold: {
               total: 0,
@@ -104,31 +81,31 @@ angular.module('ezpzeApp')
               height: 0 + 'px',
               top: offset + 'px',
               left: offset + 'px',
-              backgroundColor: OFF_BG_COLOR
+              backgroundColor: params['offBgColor']
             },
             heatIndex: undefined
           });
         }
         else if (mode === CALIBRATION_MODE) {
-          that.grid[i][j].heatIndex = heatIndex;
-          that.grid[i][j].threshold = {
-            total: that.grid[i][j].threshold.total + heatIndex,
-            min: Math.min(that.grid[i][j].threshold.min, heatIndex),
-            av: (that.grid[i][j].threshold.total + heatIndex) / iterations,
-            max: Math.max(that.grid[i][j].threshold.max, heatIndex),
-            range: that.grid[i][j].threshold.max - that.grid[i][j].threshold.min
+          system.grid[i][j].heatIndex = heatIndex;
+          system.grid[i][j].threshold = {
+            total: system.grid[i][j].threshold.total + heatIndex,
+            min: Math.min(system.grid[i][j].threshold.min, heatIndex),
+            av: (system.grid[i][j].threshold.total + heatIndex) / system.iterations,
+            max: Math.max(system.grid[i][j].threshold.max, heatIndex),
+            range: system.grid[i][j].threshold.max - system.grid[i][j].threshold.min
           };
         }
         else if (mode === OPERATION_MODE) {
-          that.grid[i][j].heatIndex = heatIndex;
-          on = heatIndex > (that.grid[i][j].threshold.max + 4) && that.tapped;
-          if (heatIndex > 170) {
-            that.coffee = true;
+          system.grid[i][j].heatIndex = heatIndex;
+          on = heatIndex > (system.grid[i][j].threshold.max + ON_THRESHOLD) && system.tapped;
+          if (heatIndex > COFFEE_THRESHOLD) {
+            system.coffee = true;
           }
-          size = on ? ON_SIZE : OFF_SIZE;
-          bgColor = on ? ON_BG_COLOR : OFF_BG_COLOR;
+          size = on ? params['onSize'] : params['offSize'];
+          bgColor = on ? params['onBgColor'] : params['offBgColor'];
           offset = getOffsetsFromDiameter(size);
-          that.grid[i][j].style = {
+          system.grid[i][j].style = {
             width: size + 'px',
             height: size + 'px',
             top: offset + 'px',
@@ -136,9 +113,13 @@ angular.module('ezpzeApp')
             backgroundColor: bgColor
           }
           if (!foundTip && on) {
-            that.grid[i][j].style.backgroundColor = 'red';
+            system.grid[i][j].style.backgroundColor = 'red';
             foundTip = true;
-            that.tipIndex = i * 8 + j;
+            system.tipIndex = i * 8 + j;
+            updateFingerTip({
+              x: i + 0.5,
+              y: j + 0.5
+            });
           }
         }
 
@@ -148,7 +129,7 @@ angular.module('ezpzeApp')
 
   var updateTouch = function (mode, volts) {
     if (mode === RESET_MODE) {
-      that.touch = {
+      system.touch = {
         total: 0,
         min: 255,
         av: 128,
@@ -158,21 +139,21 @@ angular.module('ezpzeApp')
       };
     }
     else if (mode === CALIBRATION_MODE) {
-      that.touch = {
+      system.touch = {
         volts: volts,
-        total: that.touch.total + volts,
-        min: Math.min(that.touch.min, volts),
-        av: (that.touch.total + volts) / iterations,
-        max: Math.max(that.touch.max, volts),
-        range: that.touch.max - that.touch.min
+        total: system.touch.total + volts,
+        min: Math.min(system.touch.min, volts),
+        av: (system.touch.total + volts) / system.iterations,
+        max: Math.max(system.touch.max, volts),
+        range: system.touch.max - system.touch.min
       };
     }
     else if (mode === OPERATION_MODE) {
-      that.touch.volts = volts;
-      that.touch.on = volts > 0.05 ? true : false;
-      that.didTap = that.touch.on;
-      if (that.touch.on) {
-        that.tapped = !that.tapped;
+      system.touch.volts = volts;
+      system.touch.on = volts > ON_VOLTAGE ? true : false;
+      system.didTap = system.touch.on;
+      if (system.touch.on) {
+        system.tapped = !system.tapped;
       }
     }
   }
@@ -180,23 +161,80 @@ angular.module('ezpzeApp')
   updateGrid(RESET_MODE);
   updateTouch(RESET_MODE);
 
-  res.update = function (data) {
-    iterations++;
-    var volts = data.volts;
-    var grid = data.arr;
+  return {
 
-    if (iterations <= CALIBRATION_COUNT) {
-      updateGrid(CALIBRATION_MODE, grid);
-      updateTouch(CALIBRATION_MODE, volts);
-      if (iterations == CALIBRATION_COUNT) {
-        that.calibrating = false;
+    init: function (newParams) {
+      angular.forEach(newParams, function (value, key) {
+        params[key] = value;
+      });
+    },
+
+    resetGrid: function () {
+      updateGrid(RESET_MODE);
+      updateTouch(RESET_MODE);
+    },
+
+    update: function (data) {
+      system.iterations++;
+      var volts = data.volts;
+      var grid = data.arr;
+      if (system.iterations <= CALIBRATION_COUNT) {
+        updateGrid(CALIBRATION_MODE, grid);
+        updateTouch(CALIBRATION_MODE, volts);
+        if (system.iterations == CALIBRATION_COUNT) {
+          system.calibrating = false;
+        }
+      } else {
+        updateGrid(OPERATION_MODE, grid);
+        updateTouch(OPERATION_MODE, volts);
       }
-    } else {
-      updateGrid(OPERATION_MODE, grid);
-      updateTouch(OPERATION_MODE, volts);
-    }
-  }
+    },
 
-  return res;
+    isCalibrating: function () {
+      return system.calibrating;
+    },
+
+    // should return (x, y) = 0~8
+    getFingerTipPixel: function () {
+      var total = {
+        x: 0,
+        y: 0
+      };
+      for (var i = 0; i < system.fingerTipQueue.length; i++) {
+        total.x += system.fingerTipQueue[i].x;
+        total.y += system.fingerTipQueue[i].y;
+      }
+      var averageFingerTip = {
+        x: total.x / system.fingerTipQueue.length,
+        y: total.y / system.fingerTipQueue.length
+      };
+
+      return averageFingerTip;
+    },
+
+    getGrid: function () {
+      return system.grid;
+    },
+
+    getTouch: function () {
+      return system.touch;
+    },
+
+    getCoffee: function () {
+      return system.coffee;
+    },
+
+    getTapped: function () {
+      return system.tapped;
+    },
+
+    didTap: function () {
+      return system.didTap;
+    },
+
+    getTipIndex: function () {
+      return system.tipIndex;
+    }
+  };
 
 }]);

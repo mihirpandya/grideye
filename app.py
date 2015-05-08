@@ -51,6 +51,7 @@ sampleArray = [
 @app.route("/")
 @app.route("/arr")
 @app.route("/calculator")
+@app.route("/finger-tip")
 def hello():
     try:
         return render_template('index.html')

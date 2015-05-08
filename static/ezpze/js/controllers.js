@@ -5,18 +5,24 @@ angular.module('ezpzeApp')
 
     $scope.DEBUG = false;
 
-    $scope.grid = GridService.getGrid();
-    $scope.touch = GridService.getTouch();
-    $scope.calibrating = GridService.getCalibrating();
-    $scope.tapped = GridService.getTapped();
-
     console.log($location.path());
     if ($location.path() !== '/arr') {
-      GridService.setGridParams(100, 80, 0, 'transparent', 'transparent');
+      var params = {};
+      params['squareLegnth'] = 100;
+      params['onSize'] = 80;
+      params['offSize'] = 0;
+      params['onBgColor'] = 'rgba(255, 255, 255, 0)';
+      params['onBgColor'] = 'rgba(255, 255, 255, 0)';
+      GridService.init();
     }
 
+    $scope.grid = GridService.getGrid();
+    $scope.touch = GridService.getTouch();
+    $scope.calibrating = GridService.isCalibrating();
+    $scope.tapped = GridService.getTapped();
+
     SocketService.socket.on('connect', function () {
-      Socket.socket.emit('startUpdate', {data: 'I\'m connected!'});
+      SocketService.socket.emit('startUpdate', {data: 'I\'m connected!'});
     });
 
     SocketService.socket.on('updateArray', function (data) {
@@ -24,7 +30,7 @@ angular.module('ezpzeApp')
         GridService.update(data);
         $scope.grid = GridService.getGrid();
         $scope.touch = GridService.getTouch();
-        $scope.calibrating = GridService.getCalibrating();
+        $scope.calibrating = GridService.isCalibrating();
         $scope.tapped = GridService.getTapped();
         if (GridService.getCoffee()) {
           $location.path("http://www.ecebros.com/549");
@@ -34,28 +40,107 @@ angular.module('ezpzeApp')
 
   }])
 
+.controller('FingerTipCtrl', [ '$scope', 'GridService', 'SocketService', '$location',
+  function ($scope, GridService, SocketService, $location) {
+
+      // var params = {};
+      // params['squareLegnth'] = 100;
+      // params['onSize'] = 80;
+      // params['offSize'] = 0;
+      // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
+      // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
+      // GridService.init();
+
+    // $scope.grid = GridService.getGrid();
+    // $scope.touch = GridService.getTouch();
+    // $scope.calibrating = GridService.isCalibrating();
+    // $scope.tapped = GridService.getTapped();
+
+    var UNIT_SIZE = 80;
+
+    $scope.grid = [];
+    for (var i = 0; i < 8; i++) {
+      $scope.grid.push([]);
+      for (var j = 0; j < 8; j++) {
+        $scope.grid[i][j] = i * 8 + j;
+      }
+    }
+
+    var setFingerTipStyle = function (fingerTip) {
+      $scope.fingerTipStyle = {
+        top: (fingerTip.y * UNIT_SIZE - UNIT_SIZE / 2).toString() + 'px',
+        left: (fingerTip.x * UNIT_SIZE - UNIT_SIZE / 2).toString() + 'px',
+      };
+    };
+
+    setFingerTipStyle({
+      x: 0,
+      y: 0
+    });
+
+    SocketService.socket.on('connect', function () {
+      SocketService.socket.emit('startUpdate', {data: 'I\'m connected!'});
+    });
+
+    SocketService.socket.on('updateArray', function (data) {
+      $scope.$apply(function () {
+        GridService.update(data);
+        setFingerTipStyle(GridService.getFingerTipPixel())
+        // $scope.grid = GridService.getGrid();
+        // $scope.touch = GridService.getTouch();
+        // $scope.calibrating = GridService.isCalibrating();
+        // $scope.tapped = GridService.getTapped();
+        // if (GridService.getCoffee()) {
+          // $location.path("http://www.ecebros.com/549");
+        // }
+      });
+    });
+
+  }])
+
 .controller('CalculatorCtrl', [ '$scope', 'GridService', 'SocketService',
   function ($scope, GridService, SocketService) {
 
-    $scope.grid = GridService.getGrid();
+    // $scope.grid = GridService.getGrid();
     $scope.touch = GridService.getTouch();
-    $scope.calibrating = GridService.getCalibrating();
+    $scope.calibrating = GridService.isCalibrating();
     $scope.calibrating = false;
     $scope.tapped = GridService.getTapped();
 
-    GridService.setGridParams(75, 0, 0, 'transparent', 'transparent');
+    // var params = {};
+    // params['squareLegnth'] = 75;
+    // params['onSize'] = 0;
+    // params['offSize'] = 0;
+    // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
+    // params['onBgColor'] = 'rgba(255, 255, 255, 0)';
+    // GridService.init();
 
     GridService.resetGrid();
 
     $scope.tip;
+
+    var UNIT_SIZE = 150;
+
+    var setFingerTipStyle = function (fingerTip) {
+      $scope.fingerTipStyle = {
+        top: (fingerTip.y * UNIT_SIZE - UNIT_SIZE / 2).toString() + 'px',
+        left: (fingerTip.x * UNIT_SIZE - UNIT_SIZE / 2).toString() + 'px',
+      };
+    };
+
+    setFingerTipStyle({
+      x: 0,
+      y: 0
+    });
 
     SocketService.socket.on('updateArray', function (data) {
       $scope.$apply(function () {
         GridService.update(data);
         $scope.grid = GridService.getGrid();
         $scope.touch = GridService.getTouch();
-        $scope.calibrating = GridService.getCalibrating();
+        $scope.calibrating = GridService.isCalibrating();
         $scope.tapped = GridService.getTapped();
+        setFingerTipStyle(GridService.getFingerTipPixel())
         if (GridService.didTap()) {
           console.log('tapped');
           $scope.tip = GridService.getTipIndex();
