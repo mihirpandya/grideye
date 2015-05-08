@@ -103,7 +103,7 @@ angular.module('ezpzeApp', ['ngRoute'])
     return that.tipIndex;
   }
 
-  res.reset = function () {
+  res.resetGrid = function () {
     updateGrid(RESET_MODE);
     updateTouch(RESET_MODE);
   }
@@ -134,8 +134,8 @@ angular.module('ezpzeApp', ['ngRoute'])
               range: 0
             },
             style: {
-              width: heatIndex + 'px',
-              height: heatIndex + 'px',
+              width: 0 + 'px',
+              height: 0 + 'px',
               top: offset + 'px',
               left: offset + 'px',
               backgroundColor: OFF_BG_COLOR
@@ -270,11 +270,12 @@ angular.module('ezpzeApp', ['ngRoute'])
   $scope.grid = GridService.getGrid();
   $scope.touch = GridService.getTouch();
   $scope.calibrating = GridService.getCalibrating();
+  $scope.calibrating = false;
   $scope.tapped = GridService.getTapped();
 
-  GridService.setGridParams(75, 60, 0, 'transparent', 'transparent');
+  GridService.setGridParams(75, 0, 0, 'transparent', 'transparent');
 
-  GridService.reset();
+  GridService.resetGrid();
 
   $scope.tip;
 
