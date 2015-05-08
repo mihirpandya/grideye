@@ -101,7 +101,6 @@ angular.module('ezpzeApp')
 .controller('CalculatorCtrl', [ '$scope', 'GridService', 'SocketService',
   function ($scope, GridService, SocketService) {
 
-    $scope.touch = GridService.getTouch();
     $scope.calibrating = GridService.isCalibrating();
     $scope.calibrating = false;
     $scope.tapped = GridService.getTapped();
@@ -129,7 +128,6 @@ angular.module('ezpzeApp')
     SocketService.socket.on('updateArray', function (data) {
       $scope.$apply(function () {
         GridService.update(data);
-        $scope.touch = GridService.getTouch();
         $scope.calibrating = GridService.isCalibrating();
         $scope.tapped = GridService.getTapped();
         var fingerTip = GridService.getFingerTipPixel();
